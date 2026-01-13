@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/austi/Documents/CodingSpace/Cproj/build",
+  "command": "C:\\PROGRA~1\\mingw64\\bin\\gcc.exe   -g -o CMakeFiles\\CnoteMaker.dir\\main.c.obj -c C:\\Users\\austi\\Documents\\CodingSpace\\Cproj\\main.c",
+  "file": "C:/Users/austi/Documents/CodingSpace/Cproj/main.c",
+  "output": "CMakeFiles/CnoteMaker.dir/main.c.obj"
+}
+]
