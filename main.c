@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <direct.h>
 //returns proper fileName, no \n
 char* returnValidStr(char* fileName){
     int i = 0;
@@ -18,7 +19,19 @@ auto save the file to a specific notes folder(predefined for now)
 */
 void fileHandler(char* fileName){
     returnValidStr(fileName);
-    FILE* fptr = fopen(fileName, "a");
+    //go to user profile folder
+    char* userPath = getenv("USERPROFILE");
+    //check if folder exists/if not create
+    char folderPath[256];
+    sprintf(folderPath,"%s/CnoteMaker",userPath);
+    _mkdir(folderPath);
+
+    //check if file exists/if not create
+    char filePath[256];
+    sprintf(filePath,"%s/%s",folderPath,fileName);
+    
+    //open the file
+    FILE* fptr = fopen(filePath, "a");
     //if something goes wrong
     if(fptr == NULL){
         printf("A dark being has taken your note back home");
