@@ -1,0 +1,7 @@
+# Hide VSCode files
+*.vscode
+#ignore the build folder
+/build
+#ignore executables
+*.exe
+*.out
