@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-//as few libraries as possible
+//returns proper fileName, no \n
 char* returnValidStr(char* fileName){
     int i = 0;
     while(fileName[i] != '\0'){
@@ -10,39 +10,43 @@ char* returnValidStr(char* fileName){
         }i++;
     }return fileName;
 }
+/*needs to check if file alr exists
+if not create one called "fileName"
+write to the file
+press escape to exit
+auto save the file to a specific notes folder(predefined for now)
+*/
 void fileHandler(char* fileName){
     returnValidStr(fileName);
-    FILE* fptr = fopen(fileName, 'w');
+    FILE* fptr = fopen(fileName, "a");
+    //if something goes wrong
     if(fptr == NULL){
-        printf("The File could not be created");
-    }else printf("Note created Successfully");
+        printf("A dark being has taken your note back home");
+        return;
+    }
+    printf("Your note is ready for your words:\n");
+    printf("send QUIT to leave\n");
 
+    char content[256];
+    //stay in loop forever
+    while(1){
+    if(fgets(content,256,stdin) != NULL){
+        if(strcmp(returnValidStr(content),"QUIT")==0){
+            break;
+        }
+        fprintf(fptr,"%s\n",content);
+        }
+    }
+    fclose(fptr);
 }
-
-
-
 
 //create a file, write to the file, output the file
 int main(){
-
     printf("Please tell me what file you want to create_\n");
-    char fileName[21];//-1 since \0 is the last space for
+    char fileName[50];//-1 since \0 is the last space for
     fgets(fileName,21, stdin);
     fileHandler(fileName);
+    printf("Select Any key to close this machine...");
+    getChar();
     return 0;
-}
-
-
-int softCalculator(int x){
-    return x+1;
-}
-int hardCalculator(int* x){
-    return x+1;
-}
-int main(){
-    int x = 5;
-    softCalculator(x);
-    printf(x);//this would print 5
-    hardCalculator(x);
-    printf(x);//this would print 6
 }
