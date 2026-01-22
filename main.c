@@ -1,52 +1,61 @@
 #include <stdio.h>
 #include <stdlib.h>
-//returns proper fileName, no \n
-char* returnValidStr(char* fileName){
-    int i = 0;
-    while(fileName[i] != '\0'){
-        if(fileName[i] == '\n'){
-            fileName[i] = '\0';
-            break;
-        }i++;
-    }return fileName;
-}
-/*needs to check if file alr exists
-if not create one called "fileName"
-write to the file
-press escape to exit
-auto save the file to a specific notes folder(predefined for now)
-*/
-void fileHandler(char* fileName){
-    returnValidStr(fileName);
-    FILE* fptr = fopen(fileName, "a");
-    //if something goes wrong
-    if(fptr == NULL){
-        printf("A dark being has taken your note back home");
+#include <string.h>
+#include <direct.h>
+#include <time.h>
+
+void fileHandler(char* fileName) {
+    //Get User Path
+    char* userPath = getenv("USERPROFILE");
+    char folderPath[256];
+    sprintf(folderPath, "%s/CnoteMaker", userPath);
+    _mkdir(folderPath);
+
+    //Build File Path
+    char filePath[256];
+    sprintf(filePath, "%s/%s", folderPath, fileName);
+    
+    //Open File
+    FILE* fptr = fopen(filePath, "a");
+    if (fptr == NULL) {
+        printf("Error: Could not open file.\n");
         return;
     }
-    printf("Your note is ready for your words:\n");
-    printf("send QUIT to leave\n");
+    //time
+    time_t now = time(NULL);
+    fprintf(fptr, "\n--- Note Entry: %s", ctime(&now));
+
+    printf("Writing to: %s\nType 'QUIT' to save and exit.\n", fileName);
 
     char content[256];
-    //stay in loop forever
-    while(1){
-    if(fgets(content,256,stdin) != NULL){
-        if(strcmp(returnValidStr(content),"QUIT")==0){
-            break;
-        }
-        fprintf(fptr,"%s\n",content);
-        }
+    while (fgets(content, 256, stdin)) {
+        //Remove newline for comparison
+        content[strcspn(content, "\n")] = 0;
+        
+        if (strcmp(content, "QUIT") == 0) break;
+        
+        fprintf(fptr, "%s\n", content);
     }
+
     fclose(fptr);
+    printf("Note saved successfully.\n");
 }
 
-//create a file, write to the file, output the file
-int main(){
-    printf("Please tell me what file you want to create_\n");
-    char fileName[50];//-1 since \0 is the last space for
-    fgets(fileName,21, stdin);
+int main(int argc, char* argv[]) {
+    char fileName[64];
+
+    if (argc > 1) {
+        // Use the name provided in the command eg: cnote mynote.txt
+        strncpy(fileName, argv[1], 63);
+    } else {
+        //check if the user the user just typed cnote
+        //then print Filename to prompt for input
+        printf("Filename: ");
+        if (!fgets(fileName, 63, stdin)) return 1;
+        //finds the \n and sets it to 0 so filename is clean
+        fileName[strcspn(fileName, "\n")] = 0;
+    }
+
     fileHandler(fileName);
-    printf("Select Any key to close this machine...");
-    getChar();
     return 0;
 }
